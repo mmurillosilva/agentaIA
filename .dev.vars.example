@@ -1,0 +1,15 @@
+# Copia este archivo como .dev.vars para desarrollo local (no se sube a git).
+
+# Clave de la API de Claude (platform.claude.com → API Keys)
+ANTHROPIC_API_KEY=
+
+# Opcional: modelo y nivel de esfuerzo del agente
+# ANTHROPIC_MODEL=claude-opus-5-5
+# ANTHROPIC_EFFORT=medium
+
+# Windsor.ai (déjalas vacías y usa DEMO_MODE=1 para probar sin datos reales)
+WINDSOR_API_KEY=
+WINDSOR_ACCOUNT=
+
+# 1 = usa datos de demostración en lugar de Windsor.ai
+DEMO_MODE=1

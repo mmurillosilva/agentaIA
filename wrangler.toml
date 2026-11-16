@@ -1,0 +1,7 @@
+# Configuración de Cloudflare Pages.
+# Las claves NO van aquí: se configuran como secretos en Cloudflare
+# (o en .dev.vars para desarrollo local).
+name = "smartbrands"
+pages_build_output_dir = "public"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]

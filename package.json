@@ -1,0 +1,18 @@
+{
+  "name": "agentaia",
+  "version": "0.2.0",
+  "private": true,
+  "description": "SmartBrands: dashboard de marketing con agente IA (Claude) sobre métricas de Meta Ads vía Windsor.ai",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "test": "node --test tests/*.test.js",
+    "deploy": "wrangler pages deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.9.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.163.0"
+  }
+}

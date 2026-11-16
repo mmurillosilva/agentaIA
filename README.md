@@ -1,28 +1,47 @@
-# SmartBrands — plataforma general de marketing con agente IA
+# SmartBrands — dashboard de marketing con agente IA
 
-Copia para revisión técnica. Incluye el dashboard, el endpoint del agente y una guía detallada de arquitectura. El dashboard muestra datos ficticios; no incluye API keys, tokens, contraseñas, IDs reales de cuenta, datos de producción ni información personal de clientes.
+Dashboard de métricas de Meta Ads con un chat donde se pueden hacer preguntas como *"¿qué campaña tiene el mejor CPL en Zona Norte?"*. El agente usa **Claude** (API de Anthropic) y consulta los datos en **Windsor.ai**. Todo corre en **Cloudflare Pages**.
 
-## Tecnologías del código actual
+> Estado: el chat ya funciona con datos reales o de demostración. Las gráficas del dashboard todavía usan datos ficticios. Falta el login: **no publiques el sitio con claves reales hasta configurarlo** (ver [ARCHITECTURE.md](ARCHITECTURE.md#9-seguridad-y-pendientes)).
 
-| Componente | Tecnología | Para qué se usa |
-|---|---|---|
-| Interfaz | HTML, CSS y JavaScript | Dashboard, filtros y chat |
-| Hosting | Cloudflare Pages | Publica la interfaz |
-| Backend | Cloudflare Pages Functions (JavaScript) | Implementa `POST /api/agent` |
-| Agente | OpenAI Responses API y function calling | Interpreta preguntas y solicita consultas de datos |
-| Conector | Windsor.ai API | Consulta métricas de Meta Ads |
-| Datos visibles | Arreglos JavaScript ficticios | Permiten revisar el dashboard sin datos reales |
+## Estructura
 
-El detalle de componentes, comunicación, contratos, configuración, límites y pendientes está en [ARCHITECTURE.md](ARCHITECTURE.md). El código ejecutable está en `index.html` y `functions/api/agent.js`.
+```
+public/index.html          Dashboard y chat (lo que ve el usuario)
+functions/api/agent.js     Endpoint POST /api/agent
+functions/_lib/agent.js    Agente: Claude + herramientas
+functions/_lib/metrics.js  Cálculos (totales, CPL, CTR, agrupaciones)
+functions/_lib/windsor.js  Consulta a Windsor.ai
+functions/_lib/demo-data.js  Datos de demostración
+functions/_lib/config.js   Zonas, categorías y periodos
+tests/                     Pruebas automáticas
+```
 
-## Aclaración sobre el cuadro de referencia
+## Trabajar en tu computadora
 
-Este proyecto no usa Python, FastAPI, Uvicorn, SQLite, openpyxl, Google Drive, OAuth de Drive ni Make. El backend de esta copia está escrito en JavaScript y corre como una Cloudflare Pages Function.
+Requisitos: [Node.js](https://nodejs.org) 20 o superior.
 
-## Estado
+```bash
+git clone https://github.com/mmurillosilva/agentaia.git
+cd agentaia
+npm install
+cp .dev.vars.example .dev.vars   # y escribe tu ANTHROPIC_API_KEY dentro
+npm run dev                      # abre http://localhost:8788
+```
 
-Está implementada la interfaz y el flujo de código OpenAI → function calling → Windsor.ai para consultar Meta Ads cuando se configuren credenciales y se despliegue la función. Esta copia no trae credenciales y sus métricas de pantalla son ficticias. El adaptador actual no consulta Google Ads, TikTok, CRM ni benchmarks públicos del sector.
+Con `DEMO_MODE=1` en `.dev.vars` el chat usa datos de demostración y no necesitas Windsor.ai. Para usar datos reales, pon `DEMO_MODE=0` y llena `WINDSOR_API_KEY` y `WINDSOR_ACCOUNT`.
 
-## Despliegue
+Pruebas (no gastan créditos de Claude):
 
-Pages Functions debe desplegarse con Wrangler; cargar solo los archivos estáticos mediante drag and drop no compila la carpeta `functions`. Los pasos y variables están en [ARCHITECTURE.md](ARCHITECTURE.md).
+```bash
+npm test
+```
+
+## Publicar en Cloudflare
+
+```bash
+npx wrangler login
+npm run deploy
+```
+
+Después, en Cloudflare → Workers & Pages → *smartbrands* → Settings → Variables and Secrets, agrega las variables de [ARCHITECTURE.md](ARCHITECTURE.md#8-variables-de-entorno).
